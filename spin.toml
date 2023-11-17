@@ -1,0 +1,17 @@
+spin_manifest_version = 2
+
+[application]
+authors = ["lounge <fredlunden@gmail.com>"]
+description = ""
+name = "hello-world"
+version = "0.1.0"
+
+[[trigger.http]]
+route = "/..."
+component = "hello-world"
+
+[component.hello-world]
+source = "app.wasm"
+[component.hello-world.build]
+command = "spin py2wasm app -o app.wasm"
+watch = ["app.py", "Pipfile"]
