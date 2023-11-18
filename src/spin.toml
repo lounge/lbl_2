@@ -1,0 +1,16 @@
+spin_manifest_version = 2
+
+[application]
+name = "backend"
+version = "0.1.0"
+authors = ["lounge fredlunden@gmail.com"]
+description = "lounge by lounge backend"
+
+[[trigger.http]]
+route = "/..."
+component = "backend"
+
+[component.backend]
+source = "../target/app.wasm"
+[component.backend.build]
+command = "spin py2wasm app -o ../target/app.wasm"
