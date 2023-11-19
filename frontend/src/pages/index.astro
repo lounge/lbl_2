@@ -4,7 +4,7 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="fuck off.">
 	<main>
-		<pre>jiddi jadda 0.1.0</pre>
+		<pre>jiddi jadda FE 0.1.1</pre>
 	</main>
 </Layout>
 
@@ -12,6 +12,8 @@ import Layout from "../layouts/Layout.astro";
 
 <script>
 	window.addEventListener("click", function () {
+		const body = document.querySelector('body');
+
 		console.log("öööhhh??");
 
 		const initialVol = 0.001;
@@ -52,6 +54,14 @@ import Layout from "../layouts/Layout.astro";
 
 			oscillator.frequency.value = (CurX / WIDTH) * maxFreq;
 			gain.gain.value = (CurY / HEIGHT) * maxVol;
+
+			const rgb = [
+				Math.round(e.pageX/WIDTH * 255),
+				Math.round(e.pageY/HEIGHT * 255),
+				150
+			];
+
+			document.body.style.backgroundColor = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
 		}
 	});
 </script>
