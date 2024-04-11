@@ -2,3 +2,4 @@ __pycache__
 .spin/
 .DS_STORE
 .vscode
+node_modules/
