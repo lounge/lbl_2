@@ -1,0 +1,57 @@
+(function() {
+
+    window.addEventListener("click", function () {
+        console.log("öööhhh??222323");
+    
+        const initialVol = 0.001;
+        const maxFreq = 6000;
+        const maxVol = 0.02;
+        const WIDTH = window.innerWidth;
+        const HEIGHT = window.innerHeight;
+    
+        const audioCtx = new AudioContext();
+        const analyser = audioCtx.createAnalyser();
+        const oscillator = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+    
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+    
+        analyser.fftSize = 2048;
+        analyser.getByteTimeDomainData(dataArray);
+    
+        gain.connect(audioCtx.destination);
+        gain.gain.value = initialVol;
+    
+        oscillator.connect(gain);
+        oscillator.detune.value = 100;
+        oscillator.start(0);
+    
+        oscillator.onended = function () {
+            console.log("stop");
+        };
+    
+        let CurX;
+        let CurY;
+    
+        document.onmousemove = update;
+        function update(e) {
+            CurX = e.pageX;
+            CurY = e.pageY;
+    
+            oscillator.frequency.value = (CurX / WIDTH) * maxFreq;
+            gain.gain.value = (CurY / HEIGHT) * maxVol;
+    
+            const rgb = [
+                Math.round(e.pageX/WIDTH * 255),
+                Math.round(e.pageY/HEIGHT * 255),
+                150
+            ];
+    
+            document.body.style.backgroundColor = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+        }
+    });
+
+})();
+
+
