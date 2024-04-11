@@ -4,13 +4,23 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="fuck off.">
 	<main>
-		<pre>jiddi jadda FE 0.1.3</pre>
-		<canvas id="glcanvas" width="640" height="480"></canvas>
+		<pre>jiddi jadda FE 0.1.4</pre>
+		<div>
+			<canvas id="glcanvas" ></canvas>
+		</div>		
 	</main>
 </Layout>
 
 <style>
 	canvas {
-		margin: 0 auto;
+		width: 640px; 
+		height: 480px;
+	}
+	main > div {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>
+
+
