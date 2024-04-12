@@ -12,5 +12,8 @@ component = "backend"
 
 [component.backend]
 source = "../target/app.wasm"
+sqlite_databases = ["default"]
+
 [component.backend.build]
-command = "spin py2wasm app -o ../target/app.wasm"
+command = "componentize-py -w spin-http componentize app -o ../target/app.wasm"
+watch = ["*.py", "requirements.txt"]
