@@ -4,7 +4,7 @@ spin_manifest_version = 2
 authors = ["lounge fredlunden@gmail.com"]
 description = ""
 name = "frontend"
-version = "0.1.4"
+version = "0.1.6"
 
 
 [[trigger.http]]
