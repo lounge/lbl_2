@@ -5,11 +5,18 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="fuck off.">
 	<main>
-		<pre>jiddi jadda FE 0.1.6</pre>
-		<div>
-			<canvas id="glcanvas" ></canvas>
-		</div>	
-		<a target="_blank" href="https://github.com/lounge">https://github.com/lounge</a>
+		<div id="container">
+			<p>
+				<span>jiddi jadda FE 0.1.6</span>
+			</p>
+			<div>
+				<canvas id="glcanvas" ></canvas>
+			</div>	
+			<a target="_blank" href="https://github.com/lounge">
+				https://github.com/lounge
+			</a>
+		</div>
+
 	</main>
 </Layout>
 
@@ -18,13 +25,32 @@ import Layout from "../layouts/Layout.astro";
 		width: 640px; 
 		height: 480px;
 	}
-	main > div {
+	body, html {
+      height: 100%;
+      margin: 0;
+    }
+	main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+	}
+	#container {
 		display: flex;
-		align-items: center;
 		justify-content: center;
+		align-items: center;
+		flex-direction: column;
 	}
 	a {
 		font-family: monospace;
+		background-color: #000000;
+		color: cyan;
+		padding: 2px 5px 2px 5px;
+	}
+	span {
+		font-family: monospace;
+		background-color: #000000;
+		padding: 2px 5px 2px 5px;
 	}
 </style>
 

@@ -4,15 +4,18 @@ import { drawScene } from "./scene.js";
 let cubeRotation = 0.0;
 let deltaTime = 0;
 
-main();
+let mouseX = 0;
+let mouseY = 0;
+let lastMouseMoveTime = 0;
+let rotationX = 0;
+let rotationY = 0;
+let autoRotate = true;
 
-//
-// start here
-//
-function main() {
+
+function initCube() {
   const canvas = document.querySelector("#glcanvas");
-  // Initialize the GL context
   const gl = canvas.getContext("webgl");
+  
 
   // Only continue if WebGL is available and working
   if (gl === null) {
@@ -27,7 +30,19 @@ function main() {
   // Clear the color buffer with specified clear color
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  // Vertex shader program
+
+  document.addEventListener("mousemove", (event) => {
+    const rect = canvas.getBoundingClientRect();
+    mouseX = event.clientX - rect.left - canvas.width / 2;
+    mouseY = event.clientY - rect.top - canvas.height / 2;
+    
+    rotationX = mouseY * 0.005;
+    rotationY = mouseX * 0.005;
+
+    lastMouseMoveTime = performance.now();
+    autoRotate = false;
+  });
+
 
   const vsSource = `
   attribute vec4 aVertexPosition;
@@ -109,20 +124,36 @@ function main() {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
   let then = 0;
+  
 
   // Draw the scene repeatedly
-  function render(now) {
+  const render = (now) => {
+  // function render(now) {
     now *= 0.001; // convert to seconds
     deltaTime = now - then;
     then = now;
 
-    drawScene(gl, programInfo, buffers, texture, cubeRotation);
-    cubeRotation += deltaTime;
+    const timeSinceLastMouseMove = performance.now() - lastMouseMoveTime;
+
+    // If no mouse movement for 2 seconds, auto rotate
+    if (timeSinceLastMouseMove > 500) {
+      autoRotate = true;
+    }
+
+    if (autoRotate) {
+      cubeRotation += deltaTime;
+      rotationX = 0;
+      rotationY = cubeRotation; // default Y-axis rotation
+    }
+
+    drawScene(gl, programInfo, buffers, texture, rotationX, rotationY, autoRotate, cubeRotation);
 
     requestAnimationFrame(render);
   }
+
   requestAnimationFrame(render);
 }
+
 
 //
 // Initialize a shader program, so WebGL knows how to draw our data
@@ -247,3 +278,6 @@ function loadTexture(gl, url) {
 function isPowerOf2(value) {
   return (value & (value - 1)) === 0;
 }
+
+
+export { initCube };

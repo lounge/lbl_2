@@ -12,9 +12,9 @@
   "dependencies": {
     "@astrojs/check": "^0.3.1",
     "astro": "^3.5.5",
-    "astro-compress": "^2.2.3",
     "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "astro-compress": "2.3.8"
   }
 }
-
-

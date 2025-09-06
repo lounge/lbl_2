@@ -1,5 +1,4 @@
-(function() {
-
+function initOsc() {
     window.addEventListener("click", function () {
         console.log("öööhhh??222323");
     
@@ -51,7 +50,7 @@
             document.body.style.backgroundColor = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
         }
     });
+}
 
-})();
-
+export { initOsc };
 
