@@ -1,56 +1,51 @@
+const NUM_HARMONICS = 8;
+const MIN_FREQ = 55;
+const MAX_FREQ = 880;
+const MAX_MASTER_VOL = 0.04;
+
 function initOsc() {
     window.addEventListener("click", function () {
-        console.log("öööhhh??222323");
-    
-        const initialVol = 0.001;
-        const maxFreq = 6000;
-        const maxVol = 0.02;
+        const audioCtx = new AudioContext();
+        const masterGain = audioCtx.createGain();
+        masterGain.gain.value = MAX_MASTER_VOL;
+        masterGain.connect(audioCtx.destination);
+
+        const harmonics = [];
+        for (let i = 1; i <= NUM_HARMONICS; i++) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = MIN_FREQ * i;
+            gain.gain.value = i === 1 ? 1.0 : 0.0;
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(0);
+            harmonics.push({ osc, gain, index: i });
+        }
+
         const WIDTH = window.innerWidth;
         const HEIGHT = window.innerHeight;
-    
-        const audioCtx = new AudioContext();
-        const analyser = audioCtx.createAnalyser();
-        const oscillator = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-    
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-    
-        analyser.fftSize = 2048;
-        analyser.getByteTimeDomainData(dataArray);
-    
-        gain.connect(audioCtx.destination);
-        gain.gain.value = initialVol;
-    
-        oscillator.connect(gain);
-        oscillator.detune.value = 100;
-        oscillator.start(0);
-    
-        oscillator.onended = function () {
-            console.log("stop");
+
+        document.onmousemove = function (e) {
+            const xRatio = e.pageX / WIDTH;
+            const yRatio = e.pageY / HEIGHT;
+
+            const fundamental = MIN_FREQ + xRatio * (MAX_FREQ - MIN_FREQ);
+
+            for (const h of harmonics) {
+                h.osc.frequency.value = fundamental * h.index;
+
+                if (h.index === 1) {
+                    h.gain.gain.value = 1.0 / h.index;
+                } else {
+                    const threshold = (h.index - 1) / NUM_HARMONICS;
+                    const t = Math.max(0, Math.min(1, (yRatio - threshold) / (1 - threshold)));
+                    const smooth = t * t * (3 - 2 * t);
+                    h.gain.gain.value = smooth / h.index;
+                }
+            }
         };
-    
-        let CurX;
-        let CurY;
-    
-        document.onmousemove = update;
-        function update(e) {
-            CurX = e.pageX;
-            CurY = e.pageY;
-    
-            oscillator.frequency.value = (CurX / WIDTH) * maxFreq;
-            gain.gain.value = (CurY / HEIGHT) * maxVol;
-    
-            const rgb = [
-                Math.round(e.pageX/WIDTH * 255),
-                Math.round(e.pageY/HEIGHT * 255),
-                150
-            ];
-    
-            document.body.style.backgroundColor = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
-        }
-    });
+    }, { once: true });
 }
 
 export { initOsc };
-
