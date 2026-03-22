@@ -22,14 +22,18 @@ import Layout from "../layouts/Layout.astro";
 
 <style>
 	canvas {
-		width: 640px; 
-		height: 480px;
+		width: 100%;
+		max-width: 640px;
+		height: auto;
+		aspect-ratio: 640 / 480;
 	}
 	main {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      width: 100%;
+      box-sizing: border-box;
       position: relative;
       z-index: 1;
 	}
@@ -38,6 +42,8 @@ import Layout from "../layouts/Layout.astro";
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
+		width: 100%;
+		box-sizing: border-box;
 	}
 	a {
 		font-family: monospace;
