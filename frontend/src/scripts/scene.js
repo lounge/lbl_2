@@ -1,3 +1,5 @@
+import { mat4 } from "gl-matrix";
+
 function drawScene(gl, programInfo, buffers, texture, rotationX, rotationY, autoRotate, cubeRotation) {
   gl.clearColor(0.0, 0.0, 0.0, 0.0); // Clear to black, fully opaque
   gl.clearDepth(1.0); // Clear everything

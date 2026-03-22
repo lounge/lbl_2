@@ -19,9 +19,7 @@ function initCube() {
 
   // Only continue if WebGL is available and working
   if (gl === null) {
-    alert(
-      "Unable to initialize WebGL. Your browser or machine may not support it."
-    );
+    console.error("Unable to initialize WebGL. Your browser or machine may not support it.");
     return;
   }
 
@@ -31,16 +29,21 @@ function initCube() {
   gl.clear(gl.COLOR_BUFFER_BIT);
 
 
-  document.addEventListener("mousemove", (event) => {
+  const onMouseMove = (event) => {
     const rect = canvas.getBoundingClientRect();
     mouseX = event.clientX - rect.left - canvas.width / 2;
     mouseY = event.clientY - rect.top - canvas.height / 2;
-    
+
     rotationX = mouseY * 0.005;
     rotationY = mouseX * 0.005;
 
     lastMouseMoveTime = performance.now();
     autoRotate = false;
+  };
+  document.addEventListener("mousemove", onMouseMove);
+
+  window.addEventListener("beforeunload", () => {
+    document.removeEventListener("mousemove", onMouseMove);
   });
 
 
@@ -172,11 +175,7 @@ function initShaderProgram(gl, vsSource, fsSource) {
   // If creating the shader program failed, alert
 
   if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-    alert(
-      `Unable to initialize the shader program: ${gl.getProgramInfoLog(
-        shaderProgram
-      )}`
-    );
+    console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(shaderProgram)}`);
     return null;
   }
 
@@ -201,9 +200,7 @@ function loadShader(gl, type, source) {
   // See if it compiled successfully
 
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    alert(
-      `An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`
-    );
+    console.error(`An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`);
     gl.deleteShader(shader);
     return null;
   }

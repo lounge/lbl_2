@@ -34,7 +34,6 @@ function initFluid () {
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     canvas.style.zIndex = '-1';
-    canvas.style.pointerEvents = 'auto';
     document.body.prepend(canvas);
 
     resizeCanvas();
@@ -45,17 +44,19 @@ function initFluid () {
         return;
     }
 
-    function pointerPrototype () {
-        this.id = -1;
-        this.texcoordX = 0;
-        this.texcoordY = 0;
-        this.prevTexcoordX = 0;
-        this.prevTexcoordY = 0;
-        this.deltaX = 0;
-        this.deltaY = 0;
-        this.down = false;
-        this.moved = false;
-        this.color = [30, 0, 300];
+    class pointerPrototype {
+        constructor () {
+            this.id = -1;
+            this.texcoordX = 0;
+            this.texcoordY = 0;
+            this.prevTexcoordX = 0;
+            this.prevTexcoordY = 0;
+            this.deltaX = 0;
+            this.deltaY = 0;
+            this.down = false;
+            this.moved = false;
+            this.color = [30, 0, 300];
+        }
     }
 
     let pointers = [];
@@ -76,6 +77,10 @@ function initFluid () {
         let formatRGBA = getSupportedFormat(gl, gl.RGBA16F, gl.RGBA, halfFloatTexType);
         let formatRG = getSupportedFormat(gl, gl.RG16F, gl.RG, halfFloatTexType);
         let formatR = getSupportedFormat(gl, gl.R16F, gl.RED, halfFloatTexType);
+
+        if (!formatRGBA || !formatRG || !formatR) {
+            return { gl: null, ext: null };
+        }
 
         return {
             gl,
@@ -217,37 +222,6 @@ function initFluid () {
             vT = vUv + vec2(0.0, texelSize.y);
             vB = vUv - vec2(0.0, texelSize.y);
             gl_Position = vec4(aPosition, 0.0, 1.0);
-        }
-    `);
-
-    const blurVertexShader = compileShader(gl.VERTEX_SHADER, `
-        precision highp float;
-        attribute vec2 aPosition;
-        varying vec2 vUv;
-        varying vec2 vL;
-        varying vec2 vR;
-        uniform vec2 texelSize;
-        void main () {
-            vUv = aPosition * 0.5 + 0.5;
-            float offset = 1.33333333;
-            vL = vUv - texelSize * offset;
-            vR = vUv + texelSize * offset;
-            gl_Position = vec4(aPosition, 0.0, 1.0);
-        }
-    `);
-
-    const blurShader = compileShader(gl.FRAGMENT_SHADER, `
-        precision mediump float;
-        precision mediump sampler2D;
-        varying vec2 vUv;
-        varying vec2 vL;
-        varying vec2 vR;
-        uniform sampler2D uTexture;
-        void main () {
-            vec4 sum = texture2D(uTexture, vUv) * 0.29411764;
-            sum += texture2D(uTexture, vL) * 0.35294117;
-            sum += texture2D(uTexture, vR) * 0.35294117;
-            gl_FragColor = sum;
         }
     `);
 
@@ -584,7 +558,6 @@ function initFluid () {
     let bloomFramebuffers = [];
     let ditheringTexture = createDitheringTexture();
 
-    const blurProgram            = new Program(blurVertexShader, blurShader);
     const copyProgram            = new Program(baseVertexShader, copyShader);
     const clearProgram           = new Program(baseVertexShader, clearShader);
     const colorProgram           = new Program(baseVertexShader, colorShader);
@@ -949,18 +922,6 @@ function initFluid () {
         gl.uniform1i(bloomFinalProgram.uniforms.uTexture, last.attach(0));
         gl.uniform1f(bloomFinalProgram.uniforms.intensity, CONFIG.BLOOM_INTENSITY);
         blit(destination);
-    }
-
-    function blur (target, temp, iterations) {
-        blurProgram.bind();
-        for (let i = 0; i < iterations; i++) {
-            gl.uniform2f(blurProgram.uniforms.texelSize, target.texelSizeX, 0.0);
-            gl.uniform1i(blurProgram.uniforms.uTexture, target.attach(0));
-            blit(temp);
-            gl.uniform2f(blurProgram.uniforms.texelSize, 0.0, target.texelSizeY);
-            gl.uniform1i(blurProgram.uniforms.uTexture, temp.attach(0));
-            blit(target);
-        }
     }
 
     function splatPointer (pointer) {

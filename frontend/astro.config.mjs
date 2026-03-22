@@ -5,6 +5,6 @@ import compress from "astro-compress";
 // https://astro.build/config
 export default defineConfig({
   output: "static",
-  integrations: [compress(), (await import("astro-compress")).default()]
+  integrations: [compress()]
 });
 

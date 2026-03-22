@@ -1,6 +1,6 @@
-import { initCube } from "./cube";
-import { initOsc } from "./osc";
-import { initFluid } from "./fluid";
+import { initCube } from "./cube.js";
+import { initOsc } from "./osc.js";
+import { initFluid } from "./fluid.js";
 
 function main(){
     initCube();

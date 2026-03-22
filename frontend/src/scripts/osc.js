@@ -23,12 +23,9 @@ function initOsc() {
             harmonics.push({ osc, gain, index: i });
         }
 
-        const WIDTH = window.innerWidth;
-        const HEIGHT = window.innerHeight;
-
-        document.onmousemove = function (e) {
-            const xRatio = e.pageX / WIDTH;
-            const yRatio = e.pageY / HEIGHT;
+        document.addEventListener("mousemove", function (e) {
+            const xRatio = e.pageX / window.innerWidth;
+            const yRatio = e.pageY / window.innerHeight;
 
             const fundamental = MIN_FREQ + xRatio * (MAX_FREQ - MIN_FREQ);
 
@@ -44,7 +41,11 @@ function initOsc() {
                     h.gain.gain.value = smooth / h.index;
                 }
             }
-        };
+        });
+
+        window.addEventListener("beforeunload", () => {
+            audioCtx.close();
+        });
     }, { once: true });
 }
 

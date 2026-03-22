@@ -10,11 +10,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.3.1",
-    "astro": "^3.5.5",
-    "typescript": "^5.2.2"
+    "@astrojs/check": "^0.9.8",
+    "astro": "6.0.8",
+    "gl-matrix": "^3.4.4",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "astro-compress": "2.3.8"
+    "astro-compress": "^2.4.0"
+  },
+  "resolutions": {
+    "astro": "6.0.8"
   }
 }
